@@ -1,9 +1,36 @@
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  deleteDoc,
+  doc,
+  onSnapshot,
+  query,
+  orderBy,
+  serverTimestamp,
+  getDocs
+} from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCx3pfTeDECMqriAhCYX_b2q-6ZUDhsc8k",
+  authDomain: "espagne-2026-3e5e7.firebaseapp.com",
+  projectId: "espagne-2026-3e5e7",
+  storageBucket: "espagne-2026-3e5e7.firebasestorage.app",
+  messagingSenderId: "494751802499",
+  appId: "1:494751802499:web:e936df63d25a5bd66667b6"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
 const nameInput = document.getElementById("name");
 const daySelect = document.getElementById("day");
 const memoryInput = document.getElementById("memory");
 const placeInput = document.getElementById("place");
 const moodSelect = document.getElementById("mood");
 const ratingInput = document.getElementById("rating");
+const photoInput = document.getElementById("photo");
 const addBtn = document.getElementById("addBtn");
 const clearBtn = document.getElementById("clearBtn");
 const memoriesList = document.getElementById("memoriesList");
@@ -11,7 +38,7 @@ const total = document.getElementById("total");
 const average = document.getElementById("average");
 const daysFilter = document.querySelector(".days-filter");
 
-let memories = JSON.parse(localStorage.getItem("espagneMemories")) || [];
+let memories = [];
 let currentFilter = "all";
 
 for (let i = 1; i <= 14; i++) {
@@ -25,10 +52,6 @@ for (let i = 1; i <= 14; i++) {
   btn.dataset.day = `Jour ${i}`;
   btn.textContent = `Jour ${i}`;
   daysFilter.appendChild(btn);
-}
-
-function saveMemories() {
-  localStorage.setItem("espagneMemories", JSON.stringify(memories));
 }
 
 function getFilteredMemories() {
@@ -57,8 +80,6 @@ function renderMemories() {
   }
 
   filteredMemories.forEach((memory) => {
-    const realIndex = memories.indexOf(memory);
-
     const card = document.createElement("article");
     card.className = "memory-card";
 
@@ -68,6 +89,8 @@ function renderMemories() {
         <strong>${memory.rating}/10</strong>
       </div>
 
+      ${memory.photo ? `<img class="memory-photo" src="${memory.photo}" alt="Photo souvenir">` : ""}
+
       <p>${memory.text}</p>
 
       <div class="badges">
@@ -76,7 +99,7 @@ function renderMemories() {
         <span class="badge">📅 ${memory.date}</span>
       </div>
 
-      <button class="delete-btn" onclick="deleteMemory(${realIndex})">
+      <button class="delete-btn" data-id="${memory.id}">
         Supprimer
       </button>
     `;
@@ -87,13 +110,43 @@ function renderMemories() {
   updateStats();
 }
 
-function addMemory() {
+function compressImage(file) {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+
+    reader.onload = (event) => {
+      const img = new Image();
+
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        const maxWidth = 800;
+        const ratio = maxWidth / img.width;
+
+        canvas.width = maxWidth;
+        canvas.height = img.height * ratio;
+
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+        const compressedImage = canvas.toDataURL("image/jpeg", 0.65);
+        resolve(compressedImage);
+      };
+
+      img.src = event.target.result;
+    };
+
+    reader.readAsDataURL(file);
+  });
+}
+
+async function addMemory() {
   const name = nameInput.value.trim();
   const day = daySelect.value;
   const text = memoryInput.value.trim();
   const place = placeInput.value.trim();
   const mood = moodSelect.value;
   const rating = ratingInput.value;
+  const photoFile = photoInput.files[0];
 
   if (!name || !day || !text || rating === "") {
     alert("Remplis au minimum le prénom, le jour, le souvenir et la note !");
@@ -105,44 +158,52 @@ function addMemory() {
     return;
   }
 
-  memories.push({
+  addBtn.disabled = true;
+  addBtn.textContent = "Ajout en cours...";
+
+  const photo = photoFile ? await compressImage(photoFile) : "";
+
+  await addDoc(collection(db, "memories"), {
     name,
     day,
     text,
     place,
     mood,
     rating,
-    date: new Date().toLocaleDateString("fr-FR")
+    photo,
+    date: new Date().toLocaleDateString("fr-FR"),
+    createdAt: serverTimestamp()
   });
 
-  saveMemories();
-
   currentFilter = day;
+
   document.querySelectorAll(".day-btn").forEach(btn => {
     btn.classList.toggle("active", btn.dataset.day === currentFilter);
   });
-
-  renderMemories();
 
   nameInput.value = "";
   daySelect.value = "";
   memoryInput.value = "";
   placeInput.value = "";
   ratingInput.value = "";
+  photoInput.value = "";
+
+  addBtn.disabled = false;
+  addBtn.textContent = "Ajouter le souvenir";
 }
 
-function deleteMemory(index) {
-  memories.splice(index, 1);
-  saveMemories();
-  renderMemories();
+async function deleteMemory(id) {
+  await deleteDoc(doc(db, "memories", id));
 }
 
-function clearAllMemories() {
-  if (confirm("Tu veux vraiment tout supprimer ?")) {
-    memories = [];
-    saveMemories();
-    renderMemories();
-  }
+async function clearAllMemories() {
+  if (!confirm("Tu veux vraiment tout supprimer ?")) return;
+
+  const snapshot = await getDocs(collection(db, "memories"));
+
+  snapshot.forEach(async (item) => {
+    await deleteDoc(doc(db, "memories", item.id));
+  });
 }
 
 daysFilter.addEventListener("click", (event) => {
@@ -159,7 +220,21 @@ daysFilter.addEventListener("click", (event) => {
   renderMemories();
 });
 
+memoriesList.addEventListener("click", (event) => {
+  if (!event.target.classList.contains("delete-btn")) return;
+  deleteMemory(event.target.dataset.id);
+});
+
 addBtn.addEventListener("click", addMemory);
 clearBtn.addEventListener("click", clearAllMemories);
 
-renderMemories();
+const memoriesQuery = query(collection(db, "memories"), orderBy("createdAt", "asc"));
+
+onSnapshot(memoriesQuery, (snapshot) => {
+  memories = snapshot.docs.map(docItem => ({
+    id: docItem.id,
+    ...docItem.data()
+  }));
+
+  renderMemories();
+});

@@ -26,6 +26,18 @@
 
       <input id="place" type="text" placeholder="Lieu / ville" />
 
+      <label for="photo" class="photo-btn">
+    📷 Ajouter une photo
+</label>
+
+<input
+    id="photo"
+    type="file"
+    accept="image/*"
+    capture="environment"
+    hidden
+/>
+
       <select id="mood">
         <option value="😎">😎 Chill</option>
         <option value="😂">😂 Drôle</option>
@@ -63,6 +75,6 @@
     <section id="memoriesList" class="memories"></section>
   </main>
 
-  <script src="script.js"></script>
+  <script type="module" src="script.js"></script>
 </body>
 </html>
