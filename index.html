@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vacances Espagne 🇪🇸</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="app">
+    <section class="hero">
+      <h1>🇪🇸 Vacances en Espagne</h1>
+      <p>Les meilleurs souvenirs de la famille</p>
+    </section>
+
+    <section class="form-card">
+      <h2>Ajouter un souvenir</h2>
+
+      <input id="name" type="text" placeholder="Ton prénom" />
+
+      <select id="day">
+        <option value="">Choisir le jour</option>
+      </select>
+
+      <textarea id="memory" placeholder="Raconte le meilleur moment de la journée..."></textarea>
+
+      <input id="place" type="text" placeholder="Lieu / ville" />
+
+      <select id="mood">
+        <option value="😎">😎 Chill</option>
+        <option value="😂">😂 Drôle</option>
+        <option value="😍">😍 Incroyable</option>
+        <option value="🌊">🌊 Plage</option>
+        <option value="🍕">🍕 Food</option>
+        <option value="🔥">🔥 Journée folle</option>
+      </select>
+
+      <input id="rating" type="number" min="0" max="10" placeholder="Note /10" />
+
+      <button id="addBtn">Ajouter le souvenir</button>
+    </section>
+
+    <section class="stats">
+      <div>
+        <strong id="total">0</strong>
+        <span>souvenirs</span>
+      </div>
+      <div>
+        <strong id="average">0</strong>
+        <span>moyenne /10</span>
+      </div>
+    </section>
+
+    <section class="days-filter">
+      <button class="day-btn active" data-day="all">Tous</button>
+    </section>
+
+    <section class="memories-header">
+      <h2>Nos souvenirs</h2>
+      <button id="clearBtn">Tout supprimer</button>
+    </section>
+
+    <section id="memoriesList" class="memories"></section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>

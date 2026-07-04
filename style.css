@@ -1,0 +1,195 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  min-height: 100vh;
+  background:
+    linear-gradient(rgba(0,0,0,.35), rgba(0,0,0,.35)),
+    url("https://images.unsplash.com/photo-1543783207-ec64e4d95325?auto=format&fit=crop&w=1600&q=80");
+  background-size: cover;
+  background-position: center;
+  color: white;
+}
+
+.app {
+  width: min(950px, 92%);
+  margin: auto;
+  padding: 30px 0;
+}
+
+.hero {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+.hero h1 {
+  font-size: clamp(2rem, 6vw, 4rem);
+  text-shadow: 0 4px 20px rgba(0,0,0,.5);
+}
+
+.hero p {
+  font-size: 1.2rem;
+  opacity: .9;
+}
+
+.form-card,
+.stats,
+.memories-header,
+.memory-card {
+  background: rgba(255,255,255,.15);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(255,255,255,.25);
+  border-radius: 22px;
+  box-shadow: 0 15px 40px rgba(0,0,0,.25);
+}
+
+.form-card {
+  padding: 22px;
+  display: grid;
+  gap: 12px;
+}
+
+.form-card h2 {
+  margin-bottom: 5px;
+}
+
+input,
+select,
+textarea,
+button {
+  width: 100%;
+  padding: 14px;
+  border-radius: 14px;
+  border: none;
+  font-size: 1rem;
+}
+
+textarea {
+  min-height: 110px;
+  resize: vertical;
+}
+
+button {
+  cursor: pointer;
+  font-weight: bold;
+  background: linear-gradient(135deg, #ffcc00, #ff4d00);
+  color: white;
+  transition: .2s;
+}
+
+button:hover {
+  transform: scale(1.02);
+}
+
+.stats {
+  margin: 20px 0;
+  padding: 18px;
+  display: flex;
+  justify-content: space-around;
+  text-align: center;
+}
+
+.stats strong {
+  font-size: 2rem;
+  display: block;
+}
+
+.stats span {
+  opacity: .85;
+}
+
+.memories-header {
+  padding: 16px;
+  margin-bottom: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.memories-header button {
+  width: auto;
+  background: rgba(255,0,0,.65);
+}
+
+.memories {
+  display: grid;
+  gap: 15px;
+}
+
+.memory-card {
+  padding: 18px;
+  animation: pop .25s ease;
+}
+
+.memory-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.memory-card h3 {
+  font-size: 1.3rem;
+  margin-bottom: 8px;
+}
+
+.memory-card p {
+  margin: 8px 0;
+  line-height: 1.5;
+}
+
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.badge {
+  background: rgba(255,255,255,.22);
+  padding: 7px 10px;
+  border-radius: 999px;
+}
+
+.delete-btn {
+  margin-top: 12px;
+  background: rgba(255,0,0,.7);
+}
+
+.empty {
+  text-align: center;
+  opacity: .9;
+  padding: 30px;
+}
+
+@keyframes pop {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.days-filter {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding: 10px 0 20px;
+}
+
+.day-btn {
+  min-width: 85px;
+  background: rgba(255,255,255,.18);
+  border: 1px solid rgba(255,255,255,.25);
+}
+
+.day-btn.active {
+  background: linear-gradient(135deg, #ffcc00, #ff4d00);
+  transform: scale(1.05);
+}
