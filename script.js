@@ -24,7 +24,11 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-const nameInput = document.getElementById("name");
+const profileScreen = document.getElementById("profileScreen");
+const currentProfileText = document.getElementById("currentProfile");
+const changeProfileBtn = document.getElementById("changeProfileBtn");
+const profileButtons = document.querySelectorAll(".profile-btn");
+
 const daySelect = document.getElementById("day");
 const memoryInput = document.getElementById("memory");
 const placeInput = document.getElementById("place");
@@ -40,6 +44,33 @@ const daysFilter = document.querySelector(".days-filter");
 
 let memories = [];
 let currentFilter = "all";
+let selectedProfile = localStorage.getItem("selectedProfile");
+
+function updateProfileDisplay() {
+  if (selectedProfile) {
+    currentProfileText.textContent = selectedProfile;
+    profileScreen.style.display = "none";
+  } else {
+    currentProfileText.textContent = "Aucun profil";
+    profileScreen.style.display = "flex";
+  }
+}
+
+profileButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    selectedProfile = button.dataset.profile;
+    localStorage.setItem("selectedProfile", selectedProfile);
+    updateProfileDisplay();
+  });
+});
+
+changeProfileBtn.addEventListener("click", () => {
+  localStorage.removeItem("selectedProfile");
+  selectedProfile = null;
+  updateProfileDisplay();
+});
+
+updateProfileDisplay();
 
 for (let i = 1; i <= 14; i++) {
   const option = document.createElement("option");
@@ -140,7 +171,7 @@ function compressImage(file) {
 }
 
 async function addMemory() {
-  const name = nameInput.value.trim();
+  const name = selectedProfile;
   const day = daySelect.value;
   const text = memoryInput.value.trim();
   const place = placeInput.value.trim();
@@ -148,8 +179,13 @@ async function addMemory() {
   const rating = ratingInput.value;
   const photoFile = photoInput.files[0];
 
-  if (!name || !day || !text || rating === "") {
-    alert("Remplis au minimum le prénom, le jour, le souvenir et la note !");
+  if (!name) {
+    alert("Choisis d'abord ton profil !");
+    return;
+  }
+
+  if (!day || !text || rating === "") {
+    alert("Remplis au minimum le jour, le souvenir et la note !");
     return;
   }
 
@@ -181,7 +217,6 @@ async function addMemory() {
     btn.classList.toggle("active", btn.dataset.day === currentFilter);
   });
 
-  nameInput.value = "";
   daySelect.value = "";
   memoryInput.value = "";
   placeInput.value = "";

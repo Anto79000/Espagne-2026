@@ -8,6 +8,14 @@
 </head>
 <body>
   <main class="app">
+    <section id="profileScreen" class="profile-screen">
+  <h2>Qui es-tu ?</h2>
+
+  <button class="profile-btn" data-profile="Antonin">Antonin</button>
+  <button class="profile-btn" data-profile="Maman">Maman</button>
+  <button class="profile-btn" data-profile="Maxime">Maxime</button>
+  <button class="profile-btn" data-profile="Timothée">Timothée</button>
+</section>
     <section class="hero">
       <h1>🇪🇸 Vacances en Espagne</h1>
       <p>Les meilleurs souvenirs de la famille</p>
@@ -16,7 +24,11 @@
     <section class="form-card">
       <h2>Ajouter un souvenir</h2>
 
-      <input id="name" type="text" placeholder="Ton prénom" />
+      <div class="profile-box">
+      <p>Connecté en tant que :</p>
+      <strong id="currentProfile">Aucun profil</strong>
+      <button id="changeProfileBtn" type="button">Changer</button>
+</div>
 
       <select id="day">
         <option value="">Choisir le jour</option>

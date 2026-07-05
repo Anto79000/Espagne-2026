@@ -283,3 +283,60 @@ button:hover {
     color:white;
     font-weight:bold;
 }
+
+.profile-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background:
+    linear-gradient(rgba(0,0,0,.55), rgba(0,0,0,.55)),
+    url("https://images.unsplash.com/photo-1543783207-ec64e4d95325?auto=format&fit=crop&w=1600&q=80");
+  background-size: cover;
+  background-position: center;
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 18px;
+  padding: 25px;
+  text-align: center;
+}
+
+.profile-screen h2 {
+  font-size: 2rem;
+  text-shadow: 0 4px 18px rgba(0,0,0,.6);
+}
+
+.profile-btn {
+  max-width: 320px;
+  background: rgba(255,255,255,.18);
+  border: 1px solid rgba(255,255,255,.35);
+  backdrop-filter: blur(12px);
+}
+
+.profile-btn:hover {
+  background: linear-gradient(135deg, #ffcc00, #ff4d00);
+}
+
+.profile-box {
+  background: rgba(255,255,255,.16);
+  border: 1px solid rgba(255,255,255,.25);
+  border-radius: 18px;
+  padding: 14px;
+  display: grid;
+  gap: 8px;
+  text-align: center;
+}
+
+.profile-box p {
+  opacity: .85;
+}
+
+.profile-box strong {
+  font-size: 1.4rem;
+}
+
+#changeProfileBtn {
+  background: rgba(255,255,255,.18);
+  border: 1px solid rgba(255,255,255,.25);
+}
